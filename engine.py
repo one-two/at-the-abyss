@@ -3,12 +3,14 @@ from input_handlers import handle_keys
 from entity import Entity
 from render_functions import render_all, clear_all
 from map_objects.game_map import GameMap
+import random
 
 def main():
     screen_width = 80
     screen_height = 50
     map_width = 80
     map_height = 45
+    time = 0
     colors = {
         'dark_wall': libtcod.Color(0, 0, 150),
         'dark_ground': libtcod.Color(0, 0, 0)
@@ -16,6 +18,7 @@ def main():
 
     player = Entity(int(screen_width / 2), int(screen_height / 2), '@', libtcod.azure)
     npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), 'S', libtcod.yellow)
+
     entities = [npc, player]
 
     libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
@@ -28,6 +31,7 @@ def main():
     game_map = GameMap(map_width, map_height)
 
     while not libtcod.console_is_window_closed():
+        time += 1
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
 
         render_all(con, entities, game_map, screen_width, screen_height, colors)
@@ -44,7 +48,14 @@ def main():
         if move:
             dx, dy = move
             if not game_map.is_blocked(player.x + dx, player.y + dy):
-                player.move(dx, dy)   
+                player.move(dx, dy)
+        
+        if (time % 30) == 0:
+            dx = random.randrange(-1,2)
+            dy = random.randrange(-1,2)
+            if not game_map.is_blocked(npc.x + dx, npc.y + dy):
+                npc.move(dx, dy)
+            time = 0
 
         if exit:
             return True
