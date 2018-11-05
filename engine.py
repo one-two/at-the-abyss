@@ -51,7 +51,6 @@ def main():
     fov_map = initialize_fov(game_map)
 
     while not libtcod.console_is_window_closed():
-        time += 1
         if (player.stamina < player.maxStamina): 
             player.stamina += 1
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
