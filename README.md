@@ -1,2 +1,2 @@
 # at-the-abyss
-py game with no graphs
+py game console abyss
