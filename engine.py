@@ -22,7 +22,6 @@ def main():
 
     max_monsters_per_room = 3
 
-    time = 0
     colors = {
         'dark_wall': libtcod.Color(0, 0, 0),#Color(0, 0, 50),
         'dark_ground': libtcod.Color(0, 0, 0),#Color(10, 10, 10),
@@ -87,12 +86,6 @@ def main():
                 else:
                     player.move(dx, dy)
                     fov_recompute = True
-
-        
-        if (time % 30) == 0:
-            dx = random.randrange(-1,2)
-            dy = random.randrange(-1,2)
-            time = 0
 
         if exit:
             return True
