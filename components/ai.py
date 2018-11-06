@@ -12,13 +12,12 @@ class BasicMonster:
         desty = monster.y + my
         #print(str(mx) + ' , ' + str(my))
         if monster.distance_to(player) < 8:
-            monster.move_towards(player.x, player.y, game_map, entities)
+            monster.move_astar(player, entities, game_map)
             monster.stamina = round(monster.maxStamina * 0.7)
             if monster.distance_to(player) < 2:
                 #print('attack')
                 attack_results = monster.fighter.attack(player)
                 results.extend(attack_results)
-            return(results)
         else:
             if not game_map.is_blocked(destx, desty):
                 target = get_blocking_entities_at_location(entities, destx, desty)
@@ -32,5 +31,5 @@ class BasicMonster:
                 #    monster.fighter.attack(target)
                 if target == None:
                     monster.move(mx*-1, my*-1)
-            return(results)
+        return(results)
         fov_recompute = True

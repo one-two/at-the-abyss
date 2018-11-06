@@ -6,8 +6,11 @@ from render_functions import RenderOrder
 class Entity:
     """
     A generic object to represent players, enemies, items, etc.
+    (self, x, y, char, color, light, name, maxStamina, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None,
+                item=None, inventory=None):
     """
-    def __init__(self, x, y, char, color, light, name, maxStamina, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None):
+    def __init__(self, x, y, char, color, light, name, maxStamina, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None,
+                item=None, inventory=None):
         self.x = x
         self.y = y
         self.char = char
@@ -20,12 +23,20 @@ class Entity:
         self.stamina = 0
         self.fighter = fighter
         self.ai = ai
+        self.item = item
+        self.inventory = inventory
 
         if self.fighter:
             self.fighter.owner = self
 
         if self.ai:
             self.ai.owner = self
+
+        if self.item:
+            self.item.owner = self
+
+        if self.inventory:
+            self.inventory.owner = self
 
     def move(self, dx, dy):
         # Move the entity by a given amount
@@ -90,13 +101,15 @@ class Entity:
         if not libtcod.path_is_empty(my_path) and libtcod.path_size(my_path) < 25:
             # Find the next coordinates in the computed full path
             x, y = libtcod.path_walk(my_path, True)
-            if x or y:
+            if (x or y) and not (game_map.is_blocked(x, y) or
+                        get_blocking_entities_at_location(entities, x, y)):
                 # Set self's coordinates to the next path tile
                 self.x = x
                 self.y = y
         else:
             # Keep the old move function as a backup so that if there are no paths (for example another monster blocks a corridor)
             # it will still try to move towards the player (closer to the corridor opening)
+            
             self.move_towards(target.x, target.y, game_map, entities)
 
             # Delete the path to free memory

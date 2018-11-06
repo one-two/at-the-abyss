@@ -13,8 +13,8 @@ Todo list to fill the void of our souls
 - [X] trade damages (push targets)
 - [X] basic UI
 - [X] Message logging
-- [ ] decide on how player will attack
 - [ ] Itens
+- [ ] decide on how player will attack
 - [ ] Equipments/spell/stuff for progress (change parameters with pickups)
 - [ ] State machines
 - [ ] Monster attack patterns

@@ -6,6 +6,7 @@ from map_objects.game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
 import random
 from components.fighter import Fighter
+from components.inventory import Inventory
 from death_functions import kill_monster, kill_player
 from game_states import GameStates
 from time import sleep
@@ -32,6 +33,7 @@ def main():
     fov_radius = 9
 
     max_monsters_per_room = 3
+    max_itens_per_room = 1
 
     colors = {
         'dark_wall': libtcod.Color(0, 0, 0),#Color(0, 0, 50),
@@ -44,7 +46,8 @@ def main():
         'light_ground': libtcod.Color(20, 20, 0)
     }
     fighter_component = Fighter(hp=30, defense=2, power=5)
-    player = Entity(0, 0, '@', libtcod.azure, 1, 'player', 10, blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component)
+    inventory_component = Inventory(26)
+    player = Entity(0, 0, '@', libtcod.azure, 1, 'player', 10, blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, inventory=inventory_component)
     #npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), 'S', libtcod.yellow, True)
 
     entities = [player]
@@ -59,20 +62,20 @@ def main():
     panel = libtcod.console_new(screen_width, panel_height)
 
     game_map = GameMap(map_width, map_height)
-    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room)
+    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room, max_itens_per_room)
     fov_recompute = True
     fov_map = initialize_fov(game_map)
     game_state = 1
     while not libtcod.console_is_window_closed():
         if (player.stamina < player.maxStamina): 
             player.stamina += 1
-        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
+        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
 
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
 
         render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, colors, fov_radius, bar_width,
-               panel_height, panel_y)
+               panel_height, panel_y, mouse)
         fov_recompute = False
 
         libtcod.console_flush()
@@ -83,6 +86,7 @@ def main():
 
         move = action.get('move')
         exit = action.get('exit')
+        pickup = action.get('pickup')
         fullscreen = action.get('fullscreen')
         if game_state == GameStates.PLAYER_DEAD:
             sleep(5)
@@ -127,7 +131,7 @@ def main():
 
         for entity in entities:
             if entity != player:
-                if entity.stamina < entity.maxStamina: entity.stamina += 1 
+                if entity.stamina < entity.maxStamina and entity.maxStamina != 0: entity.stamina += 1 
                 elif entity.fighter and entity.fighter.hp > 0:
                     entity.stamina = 0
                     enemy_turn_results = entity.ai.act(player, fov_map, game_map, entities)
