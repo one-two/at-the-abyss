@@ -10,7 +10,7 @@ Todo list to fill the void of our souls
 - [X] Collision with NPC
 - [X] Basic monster ai (chase and 'hit')
 - [X] Lateral movement when within range
-- [ ] trade damages
+- [X] trade damages (push targets)
 - [ ] State machines
 - [ ] decide on how player will attack
 - [ ] Monster attack warning?
