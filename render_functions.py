@@ -1,8 +1,14 @@
 import libtcodpy as libtcod
 import math
+from enum import Enum
+
+class RenderOrder(Enum):
+    CORPSE = 1
+    ITEM = 2
+    ACTOR = 3
 
 
-def render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, screen_height, colors, fov_radius):
+def render_all(con, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, colors, fov_radius):
     # Draw all the tiles in the game map /in sight range
     if fov_recompute:
         for y in range(game_map.height):
@@ -27,17 +33,25 @@ def render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, sc
                         # else:
                         #     libtcod.console_set_char_background(con, x, y, colors.get('light_ground'), libtcod.BKGND_SET)
                         clr = math.floor(21-((20*dist)/(fov_radius+1)))
+                        libtcod.console_put_char(con, x, y, ' ', libtcod.BKGND_SET)
                         libtcod.console_set_char_background(con, x, y, libtcod.Color(clr, clr, 0), libtcod.BKGND_SET)
                     game_map.tiles[x][y].explored = True
                 elif game_map.tiles[x][y].explored:
                     if wall:
                         libtcod.console_set_char_background(con, x, y, colors.get('explored_wall'), libtcod.BKGND_SET)
                     else:
+                        libtcod.console_set_default_foreground(con, libtcod.darker_grey)
+                        libtcod.console_put_char(con, x, y, '.', libtcod.BKGND_NONE)
                         libtcod.console_set_char_background(con, x, y, colors.get('explored_ground'), libtcod.BKGND_SET)
 
     # Draw all entities in the list
-    for entity in entities:
+    entities_in_render_order = sorted(entities, key=lambda x: x.render_order.value)
+
+    for entity in entities_in_render_order:
         draw_entity(con, entity, fov_map)
+
+    libtcod.console_set_default_foreground(con, libtcod.white)
+    libtcod.console_print_ex(con, 1, screen_height -2, libtcod.BKGND_NONE, libtcod.LEFT, ' {0:02}/{1:02}'.format(player.fighter.hp, player.fighter.max_hp))
 
     libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
 
