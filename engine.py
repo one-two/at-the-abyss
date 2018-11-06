@@ -5,6 +5,7 @@ from render_functions import render_all, clear_all
 from map_objects.game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
 import random
+from components.fighter import Fighter
 
 def main():
     screen_width = 100
@@ -32,8 +33,8 @@ def main():
         'light_wall': libtcod.Color(30, 30, 100),
         'light_ground': libtcod.Color(20, 20, 0)
     }
-
-    player = Entity(0, 0, '@', libtcod.azure, 1, 'player', 10, blocks=True)
+    fighter_component = Fighter(hp=30, defense=2, power=5)
+    player = Entity(0, 0, '@', libtcod.azure, 1, 'player', 10, blocks=True, fighter=fighter_component)
     #npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), 'S', libtcod.yellow, True)
 
     entities = [player]
@@ -97,25 +98,7 @@ def main():
                 if entity.stamina < entity.maxStamina: entity.stamina += 1
                 else:
                     entity.stamina = 0
-                    mx = random.choice([-1, 0, 1]) 
-                    my = random.choice([-1, 0, 1])
-                    destx = entity.x + mx
-                    desty = entity.y + my
-                    #print(str(mx) + ' , ' + str(my))
-                    if not game_map.is_blocked(destx, desty):
-                        target = get_blocking_entities_at_location(entities, destx, desty)
-                        if target == player:
-                            print('pau neles')
-                        if target == None:
-                            entity.move(mx, my)
-                            fov_recompute = True
-                    else:
-                        target = get_blocking_entities_at_location(entities, destx*-1, desty*-1)
-                        if target == player:
-                            print('pau neles')
-                        if target == None:
-                            entity.move(mx*-1, my*-1)
-                            fov_recompute = True
+                    entity.ai.act(player, fov_map, game_map, entities)
 
 if __name__ == '__main__':
     main()
