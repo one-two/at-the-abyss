@@ -1,6 +1,8 @@
 import libtcodpy as libtcod
 import math
 from enum import Enum
+from game_states import GameStates
+from menus import inventory_menu
 
 class RenderOrder(Enum):
     CORPSE = 1
@@ -31,7 +33,7 @@ def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_c
                              '{0}: {1}/{2}'.format(name, value, maximum))
 
 def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, colors, fov_radius, bar_width,
-               panel_height, panel_y, mouse):
+               panel_height, panel_y, mouse, game_state):
     # Draw all the tiles in the game map /in sight range
     if fov_recompute:
         for y in range(game_map.height):
@@ -48,15 +50,23 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
                         #     libtcod.console_set_char_background(con, x, y, colors.get('medium_wall'), libtcod.BKGND_SET)
                         # else:
                         #     libtcod.console_set_char_background(con, x, y, colors.get('light_wall'), libtcod.BKGND_SET)
-                        clr = math.floor(31-((30*dist)/(fov_radius+1)))
-                        libtcod.console_set_char_background(con, x, y, libtcod.Color(clr, clr, 100), libtcod.BKGND_SET)
+                        if game_state == GameStates.SHOW_INVENTORY:
+                            clr = math.floor(11-((10*dist)/(fov_radius+1)))
+                            libtcod.console_set_char_background(con, x, y, libtcod.Color(clr, clr, 30), libtcod.BKGND_SET)
+                        else:
+                            clr = math.floor(31-((30*dist)/(fov_radius+1)))
+                            libtcod.console_set_char_background(con, x, y, libtcod.Color(clr, clr, 100), libtcod.BKGND_SET)
                     else:
                         # if dist > 4:
                         #     libtcod.console_set_char_background(con, x, y, colors.get('medium_ground'), libtcod.BKGND_SET)
                         # else:
                         #     libtcod.console_set_char_background(con, x, y, colors.get('light_ground'), libtcod.BKGND_SET)
-                        clr = math.floor(21-((20*dist)/(fov_radius+1)))
-                        libtcod.console_set_char_background(con, x, y, libtcod.Color(clr, clr, 0), libtcod.BKGND_SET)
+                        if game_state == GameStates.SHOW_INVENTORY:
+                            clr = math.floor(7-((6*dist)/(fov_radius+1)))
+                            libtcod.console_set_char_background(con, x, y, libtcod.Color(clr, clr, 0), libtcod.BKGND_SET)
+                        else:
+                            clr = math.floor(21-((20*dist)/(fov_radius+1)))
+                            libtcod.console_set_char_background(con, x, y, libtcod.Color(clr, clr, 0), libtcod.BKGND_SET)
                     game_map.tiles[x][y].explored = True
                 elif game_map.tiles[x][y].explored:
                     if wall:
@@ -96,6 +106,10 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
                              get_names_under_mouse(mouse, entities, fov_map))
 
     libtcod.console_blit(panel, 0, 0, screen_width, panel_height, 0, 0, panel_y)
+
+    if game_state == GameStates.SHOW_INVENTORY:
+        inventory_menu(con, 'Press the key next to an item to use it, or Esc to cancel.\n',
+                       player.inventory, 50, screen_width, screen_height)
 
 
 def clear_all(con, entities):

@@ -10,7 +10,7 @@ from components.inventory import Inventory
 from death_functions import kill_monster, kill_player
 from game_states import GameStates
 from time import sleep
-from game_messages import MessageLog
+from game_messages import MessageLog, Message
 
 def main():
     screen_width = 100
@@ -24,6 +24,7 @@ def main():
     map_width = 100
     map_height = 63
 
+    menu_selection = 0
     room_max_size = 16
     room_min_size = 10
     max_rooms = 30
@@ -33,7 +34,7 @@ def main():
     fov_radius = 9
 
     max_monsters_per_room = 3
-    max_itens_per_room = 1
+    max_itens_per_room = 3
 
     colors = {
         'dark_wall': libtcod.Color(0, 0, 0),#Color(0, 0, 50),
@@ -65,7 +66,8 @@ def main():
     game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room, max_itens_per_room)
     fov_recompute = True
     fov_map = initialize_fov(game_map)
-    game_state = 1
+    game_state = GameStates.PLAYERS_TURN
+    previous_game_state = game_state
     while not libtcod.console_is_window_closed():
         if (player.stamina < player.maxStamina): 
             player.stamina += 1
@@ -75,7 +77,7 @@ def main():
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
 
         render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, colors, fov_radius, bar_width,
-               panel_height, panel_y, mouse)
+               panel_height, panel_y, mouse, game_state)
         fov_recompute = False
 
         libtcod.console_flush()
@@ -87,12 +89,13 @@ def main():
         move = action.get('move')
         exit = action.get('exit')
         pickup = action.get('pickup')
+        show_inventory = action.get('show_inventory')
         fullscreen = action.get('fullscreen')
         if game_state == GameStates.PLAYER_DEAD:
             sleep(5)
             break
         act_results = []
-        if move and player.stamina == player.maxStamina:
+        if move and player.stamina == player.maxStamina and game_state == GameStates.PLAYERS_TURN:
             player.stamina = 0
             dx, dy = move
             dest_x = player.x + dx
@@ -108,8 +111,36 @@ def main():
                     player.move(dx, dy)
                     fov_recompute = True
 
+        elif pickup and player.stamina == player.maxStamina and game_state == GameStates.PLAYERS_TURN:
+            player.stamina = 0
+            for entity in entities:
+                if entity.item and entity.x == player.x and entity.y == player.y:
+                    pickup_results = player.inventory.add_item(entity)
+                    act_results.extend(pickup_results)
+
+                    break
+                if entity.render_order == RenderOrder.CORPSE:
+                    message_log.add_message(Message('Presunto! Uoba', libtcod.purple))
+                    break
+            else:
+                message_log.add_message(Message('Nada no chao', libtcod.yellow))
+
+        if show_inventory:
+            fov_recompute = True
+            if game_state ==  GameStates.PLAYERS_TURN:
+                previous_game_state = GameStates.PLAYERS_TURN
+                game_state = GameStates.SHOW_INVENTORY
+            elif game_state == GameStates.SHOW_INVENTORY:
+                game_state = previous_game_state
+
+        if move and game_state == GameStates.SHOW_INVENTORY:
+            dx, dy = move
+
         if exit:
-            return True
+            if game_state == GameStates.SHOW_INVENTORY:
+                game_state = previous_game_state
+            else:
+                return True
 
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
@@ -117,6 +148,7 @@ def main():
         for player_turn_result in act_results:
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
+            item_added = player_turn_result.get('item_added')
 
             if message:
                 message_log.add_message(message)
@@ -128,27 +160,30 @@ def main():
                     message = kill_monster(dead_entity)
 
                 message_log.add_message(message)
+            
+            if item_added:
+                entities.remove(item_added)
+        if game_state == GameStates.PLAYERS_TURN:
+            for entity in entities:
+                if entity != player:
+                    if entity.stamina < entity.maxStamina and entity.maxStamina != 0: entity.stamina += 1 
+                    elif entity.fighter and entity.fighter.hp > 0:
+                        entity.stamina = 0
+                        enemy_turn_results = entity.ai.act(player, fov_map, game_map, entities)
+                        for enemy_turn_result in enemy_turn_results:
+                            message = enemy_turn_result.get('message')
+                            dead_entity = enemy_turn_result.get('dead')
 
-        for entity in entities:
-            if entity != player:
-                if entity.stamina < entity.maxStamina and entity.maxStamina != 0: entity.stamina += 1 
-                elif entity.fighter and entity.fighter.hp > 0:
-                    entity.stamina = 0
-                    enemy_turn_results = entity.ai.act(player, fov_map, game_map, entities)
-                    for enemy_turn_result in enemy_turn_results:
-                        message = enemy_turn_result.get('message')
-                        dead_entity = enemy_turn_result.get('dead')
+                            if message:
+                                message_log.add_message(message)
 
-                        if message:
-                            message_log.add_message(message)
+                            if dead_entity:
+                                if dead_entity == player:
+                                    message, game_state = kill_player(dead_entity)
+                                else:
+                                    message = kill_monster(dead_entity)
 
-                        if dead_entity:
-                            if dead_entity == player:
-                                message, game_state = kill_player(dead_entity)
-                            else:
-                                message = kill_monster(dead_entity)
-
-                            message_log.add_message(message)
+                                message_log.add_message(message)
 
 if __name__ == '__main__':
     main()
