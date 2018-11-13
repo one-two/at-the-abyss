@@ -11,6 +11,7 @@ from death_functions import kill_monster, kill_player
 from game_states import GameStates
 from time import sleep
 from game_messages import MessageLog, Message
+from components.attack import Damage_Area
 
 def main():
     screen_width = 100
@@ -69,9 +70,13 @@ def main():
     fov_map = initialize_fov(game_map)
     game_state = GameStates.PLAYERS_TURN
     previous_game_state = game_state
+
+    lastmove = (0, 0)
     while not libtcod.console_is_window_closed():
         if (player.stamina < player.maxStamina): 
             player.stamina += 1
+        if (player.cooldown < player.maxCooldown):
+            player.cooldown += 1
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
 
         if fov_recompute:
@@ -94,6 +99,7 @@ def main():
         fullscreen = action.get('fullscreen')
         use  = action.get('use')
         drop = action.get('drop')
+        strong_attack = action.get('strong_attack')
 
         if game_state == GameStates.PLAYER_DEAD:
             sleep(5)
@@ -102,6 +108,7 @@ def main():
         if move and player.stamina == player.maxStamina and game_state == GameStates.PLAYERS_TURN:
             player.stamina = 0
             dx, dy = move
+            lastmove = move
             dest_x = player.x + dx
             dest_y = player.y + dy
 
@@ -115,7 +122,19 @@ def main():
                     player.move(dx, dy)
                     fov_recompute = True
 
-        elif pickup and player.stamina == player.maxStamina and game_state == GameStates.PLAYERS_TURN:
+        if strong_attack and player.cooldown >= 40:
+            player.cooldown = 0
+            dx, dy = lastmove
+            dmg = Damage_Area(player.x + dx, player.y + dy, 7, delay=40)
+            dmg2 = Damage_Area(player.x + (dx*2), player.y + (dy*2), 7, delay=40)
+            dmg3 = Damage_Area(player.x + (dx*3), player.y + (dy*3), 7, delay=40)
+            dmg4 = Damage_Area(player.x + (dx*4), player.y + (dy*4), 7, delay=40)
+            dmg.CreateDamageEntity(game_map, dmg, entities)
+            dmg2.CreateDamageEntity(game_map, dmg2, entities)
+            dmg3.CreateDamageEntity(game_map, dmg3, entities)
+            dmg4.CreateDamageEntity(game_map, dmg4, entities)
+            
+        if pickup and player.stamina == player.maxStamina and game_state == GameStates.PLAYERS_TURN:
             player.stamina = 0
             for entity in entities:
                 if entity.item and entity.x == player.x and entity.y == player.y:
@@ -156,7 +175,7 @@ def main():
                     if menu_position < 0:
                         menu_position = 0
             if drop and player.inventory.items:
-                message_log.add_message(Message('Voce destruiou o item {0}'.format(player.inventory.items[menu_position].name), libtcod.yellow))
+                message_log.add_message(Message('Voce destruiu o item {0}'.format(player.inventory.items[menu_position].name), libtcod.yellow))
                 player.inventory.remove_item(player.inventory.items[menu_position])
                 if menu_position == len(player.inventory.items)-1:
                     menu_position -= 2
@@ -172,11 +191,22 @@ def main():
 
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
-        
+
+        #damage blocks iterations
+        for entity in entities[:]:
+            if entity.damage:
+                entity.damage.time += 1
+                if entity.damage.time >= entity.damage.delay*0.7:
+                    entity.color = libtcod.red
+                if entity.damage.time >= entity.damage.delay:
+                    act_results.extend(entity.damage.CauseDamage(entities))
+                    entities.remove(entity)
+                         
         for player_turn_result in act_results:
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
             item_added = player_turn_result.get('item_added')
+            expired = player_turn_result.get('expired')
 
             if message:
                 message_log.add_message(message)
@@ -191,6 +221,10 @@ def main():
             
             if item_added:
                 entities.remove(item_added)
+
+            if expired:
+                entities.remove(expired)
+
         if game_state == GameStates.PLAYERS_TURN:
             for entity in entities:
                 if entity != player:
@@ -212,6 +246,9 @@ def main():
                                     message = kill_monster(dead_entity)
 
                                 message_log.add_message(message)
+
+                                                
+
 
 if __name__ == '__main__':
     main()

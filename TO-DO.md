@@ -14,6 +14,7 @@ Todo list to fill the void of our souls
 - [X] basic UI
 - [X] Message logging
 - [X] Use itens (basic potions)
+- [ ] Press space for AoE
 - [ ] Equipments/spell/stuff for progress (change parameters with pickups)
 - [ ] decide on how player will attack
 - [ ] State machines?

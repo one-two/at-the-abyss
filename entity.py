@@ -7,10 +7,10 @@ class Entity:
     """
     A generic object to represent players, enemies, items, etc.
     (self, x, y, char, color, light, name, maxStamina, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None,
-                item=None, inventory=None):
+                item=None, inventory=None, damage=None):
     """
     def __init__(self, x, y, char, color, light, name, maxStamina, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None,
-                item=None, inventory=None):
+                item=None, inventory=None, damage=None):
         self.x = x
         self.y = y
         self.char = char
@@ -25,6 +25,9 @@ class Entity:
         self.ai = ai
         self.item = item
         self.inventory = inventory
+        self.cooldown = 0
+        self.maxCooldown = 40
+        self.damage = damage
 
         if self.fighter:
             self.fighter.owner = self

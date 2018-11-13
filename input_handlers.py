@@ -20,6 +20,9 @@ def handle_keys(key):
         return {'use': True}
     if key.vk == libtcod.KEY_BACKSPACE:
         return {'drop': True}
+    if key.vk == libtcod.KEY_SPACE:
+        return {'strong_attack': True}
+    
     if key_char == 'g':
         return {'pickup': True}
     elif key_char == 'i':
