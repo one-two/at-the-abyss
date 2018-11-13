@@ -28,3 +28,9 @@ class Fighter:
             results.append({'message': Message('{0} ataca {1} mas nao bateu nada.'.format(
                 self.owner.name.capitalize(), target.name), libtcod.white)})
         return results
+
+    def heal(self, amount):
+        self.hp += amount
+
+        if self.hp > self.max_hp:
+            self.hp = self.max_hp

@@ -35,6 +35,7 @@ def main():
 
     max_monsters_per_room = 3
     max_itens_per_room = 3
+    menu_position = 0
 
     colors = {
         'dark_wall': libtcod.Color(0, 0, 0),#Color(0, 0, 50),
@@ -77,7 +78,7 @@ def main():
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
 
         render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, colors, fov_radius, bar_width,
-               panel_height, panel_y, mouse, game_state)
+               panel_height, panel_y, mouse, game_state, menu_position)
         fov_recompute = False
 
         libtcod.console_flush()
@@ -91,6 +92,9 @@ def main():
         pickup = action.get('pickup')
         show_inventory = action.get('show_inventory')
         fullscreen = action.get('fullscreen')
+        use  = action.get('use')
+        drop = action.get('drop')
+
         if game_state == GameStates.PLAYER_DEAD:
             sleep(5)
             break
@@ -119,7 +123,7 @@ def main():
                     act_results.extend(pickup_results)
 
                     break
-                if entity.render_order == RenderOrder.CORPSE:
+                if entity.x == player.x and entity.y == player.y and entity.render_order == RenderOrder.CORPSE:
                     message_log.add_message(Message('Presunto! Uoba', libtcod.purple))
                     break
             else:
@@ -132,9 +136,33 @@ def main():
                 game_state = GameStates.SHOW_INVENTORY
             elif game_state == GameStates.SHOW_INVENTORY:
                 game_state = previous_game_state
+                menu_position = 0
 
-        if move and game_state == GameStates.SHOW_INVENTORY:
-            dx, dy = move
+        if (move or use or drop) and game_state == GameStates.SHOW_INVENTORY:
+            if move and player.inventory.items:
+                dx, dy = move
+                if dy != 0:
+                    menu_position += dy
+                    if menu_position == -1:
+                        menu_position = len(player.inventory.items) -1
+                    if menu_position == len(player.inventory.items):
+                        menu_position = 0
+            if use and player.inventory.items:
+                message_use = player.inventory.use(player.inventory.items[menu_position])
+                act_results.extend(message_use)
+                #print(player.inventory.items.pop(menu_position).name)
+                if menu_position == len(player.inventory.items)-1:
+                    menu_position -= 2
+                    if menu_position < 0:
+                        menu_position = 0
+            if drop and player.inventory.items:
+                message_log.add_message(Message('Voce destruiou o item {0}'.format(player.inventory.items[menu_position].name), libtcod.yellow))
+                player.inventory.remove_item(player.inventory.items[menu_position])
+                if menu_position == len(player.inventory.items)-1:
+                    menu_position -= 2
+                    if menu_position < 0:
+                        menu_position = 0
+                
 
         if exit:
             if game_state == GameStates.SHOW_INVENTORY:

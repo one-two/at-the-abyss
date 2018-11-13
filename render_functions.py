@@ -33,7 +33,7 @@ def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_c
                              '{0}: {1}/{2}'.format(name, value, maximum))
 
 def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, colors, fov_radius, bar_width,
-               panel_height, panel_y, mouse, game_state):
+               panel_height, panel_y, mouse, game_state, menu_position):
     # Draw all the tiles in the game map /in sight range
     if fov_recompute:
         for y in range(game_map.height):
@@ -108,8 +108,8 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     libtcod.console_blit(panel, 0, 0, screen_width, panel_height, 0, 0, panel_y)
 
     if game_state == GameStates.SHOW_INVENTORY:
-        inventory_menu(con, 'Press the key next to an item to use it, or Esc to cancel.\n',
-                       player.inventory, 50, screen_width, screen_height)
+        inventory_menu(con, 'Itens:\n',
+                       player.inventory, 50, screen_width, screen_height, menu_position)
 
 
 def clear_all(con, entities):
