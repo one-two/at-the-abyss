@@ -1,4 +1,4 @@
-Todo list to fill the void of our souls
+Todo list to fill the void of our souls (but i really want to make it web)
 
 - [X] Walls
 - [X] Rooms
@@ -14,7 +14,8 @@ Todo list to fill the void of our souls
 - [X] basic UI
 - [X] Message logging
 - [X] Use itens (basic potions)
-- [ ] Press space for AoE
+- [X] Press space for AoE
+- [ ] Better put some save/load system early, like, now
 - [ ] Equipments/spell/stuff for progress (change parameters with pickups)
 - [ ] decide on how player will attack
 - [ ] State machines?
