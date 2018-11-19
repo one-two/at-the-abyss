@@ -23,6 +23,9 @@ def handle_keys(key):
     if key.vk == libtcod.KEY_SPACE:
         return {'strong_attack': True}
     
+    if key.vk == libtcod.KEY_TAB:
+        return {'show_character_screen': True}
+    
     if key_char == 'g':
         return {'pickup': True}
     elif key_char == 'i':

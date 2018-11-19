@@ -2,7 +2,7 @@ import libtcodpy as libtcod
 import math
 from enum import Enum
 from game_states import GameStates
-from menus import inventory_menu, level_up_menu
+from menus import inventory_menu, level_up_menu, character_screen
 
 class RenderOrder(Enum):
     STAIRS = 1
@@ -120,6 +120,9 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     
     if game_state == GameStates.LEVEL_UP:
         level_up_menu(con, 'Fortaleca:\n', player, 40, screen_width, screen_height, menu_position)
+    
+    if game_state == GameStates.CHARACTER_SCREEN:
+        character_screen(player, 30, 10, screen_width, screen_height)
 
 
 def clear_all(con, entities):

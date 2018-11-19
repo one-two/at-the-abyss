@@ -6,3 +6,4 @@ class GameStates(Enum):
     PLAYER_DEAD = 3
     SHOW_INVENTORY = 4
     LEVEL_UP = 5
+    CHARACTER_SCREEN = 6

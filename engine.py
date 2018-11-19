@@ -49,6 +49,7 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
         use  = action.get('use')
         drop = action.get('drop')
         strong_attack = action.get('strong_attack')
+        show_character_screen = action.get('show_character_screen')
 
         click = mouse_action.get('left_click')
 
@@ -131,6 +132,13 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
             elif game_state == GameStates.SHOW_INVENTORY:
                 game_state = previous_game_state
                 menu_position = 0
+        
+        if show_character_screen:
+            if game_state == GameStates.PLAYERS_TURN:
+                previous_game_state = GameStates.PLAYERS_TURN
+                game_state = GameStates.CHARACTER_SCREEN
+            elif game_state == GameStates.CHARACTER_SCREEN: 
+                game_state = previous_game_state
 
         if (move or use or drop) and game_state == GameStates.SHOW_INVENTORY:
             print(menu_position)
@@ -146,8 +154,8 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
                 message_use = player.inventory.use(player.inventory.items[menu_position])
                 act_results.extend(message_use)
                 #print(player.inventory.items.pop(menu_position).name)
-                if menu_position == len(player.inventory.items)-1:
-                    menu_position -= 2
+                if menu_position >= len(player.inventory.items)-1:
+                    menu_position = len(player.inventory.items)-1
                     if menu_position < 0:
                         menu_position = 0
             if drop and player.inventory.items:
@@ -176,14 +184,18 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
                 elif menu_position == 2:
                     player.fighter.defense += 1
                 game_state = previous_game_state
-
-
+                
         if exit:
-            if game_state == GameStates.SHOW_INVENTORY:
+            if game_state == GameStates.SHOW_INVENTORY or game_state == GameStates.CHARACTER_SCREEN:
                 game_state = previous_game_state
             else:
                 save_game(player, entities, game_map, message_log, game_state)
                 return True
+        
+        
+        if game_state == GameStates.CHARACTER_SCREEN:
+            if exit:
+                game_state = previous_game_state
 
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
@@ -197,7 +209,8 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
                 if entity.damage.time >= entity.damage.delay:
                     act_results.extend(entity.damage.CauseDamage(entities))
                     entities.remove(entity)
-                         
+
+        # player results calculation                 
         for player_turn_result in act_results:
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
@@ -234,7 +247,7 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
                     game_state = GameStates.LEVEL_UP
                     menu_position = 0
 
-
+        # enemies moves calculation
         if game_state == GameStates.PLAYERS_TURN:
             for entity in entities:
                 if entity != player:
