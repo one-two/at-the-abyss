@@ -3,7 +3,8 @@ py game console abyss
 
 
 Arrows: Movement
-i: Inventory
-g: Grab itens (!)
 Space: Weapon attack
+tab: stats
+i: Inventory (backspace: destroy itens)
+g: Grab itens ('!')
 esc: Exit

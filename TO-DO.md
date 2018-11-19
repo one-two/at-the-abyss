@@ -20,7 +20,7 @@ Todo list to fill the void of our souls (but i really want to make it web)
 - [X] Leveling/xp system
 - [ ] Equipments/spell/stuff for progress (change parameters with pickups)
 - [X] decide on how player will attack
-- [ ] State machines?
+- [X] State machines? sorta
 - [ ] Monster attack patterns
 - [ ] Attack stamina != moving stamina
 - [X] Exits
