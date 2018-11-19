@@ -1,4 +1,5 @@
 import libtcodpy as libtcod
+from player_attributes import PlayerAttributes
 
 
 def menu(con, header, options, width, screen_width, screen_height, menu_position):
@@ -40,3 +41,25 @@ def inventory_menu(con, header, inventory, inventory_width, screen_width, screen
         options = [item.name for item in inventory.items]
 
     menu(con, header, options, inventory_width, screen_width, screen_height, menu_position)
+
+def main_menu(con, background_image, screen_width, screen_height, menu_position):
+    libtcod.image_blit_2x(background_image, 0, int(screen_width*0.1), int(screen_height*0.1))
+
+    libtcod.console_set_default_foreground(0, libtcod.light_yellow)
+    libtcod.console_print_ex(0, int(screen_width / 2), int(screen_height / 2) - 4, libtcod.BKGND_NONE, libtcod.CENTER,
+                             'olhe para o abismo')
+    libtcod.console_print_ex(0, int(screen_width / 2), int(screen_height - 2), libtcod.BKGND_NONE, libtcod.CENTER,
+                             '~ o ~')
+
+    menu(con, '', ['Comecar do vazio', 'Continuar a existencia', 'Retornar a vida'], 24, screen_width, screen_height, menu_position)
+
+def level_up_menu(con, header, player, menu_width, screen_width, screen_height, menu_position):
+
+    options = ['Constituicao (+20 HP, de {0})'.format(player.fighter.max_hp),
+            'Forca (+1 ataque, de {0})'.format(player.fighter.power),
+            'Dureza (+1 defesa, de {0})'.format(player.fighter.defense)]
+
+    menu(con, header, options, menu_width, screen_width, screen_height, menu_position)
+
+def message_box(con, header, width, screen_width, screen_height, menu_position):
+    menu(con, header, [], width, screen_width, screen_height, menu_position)

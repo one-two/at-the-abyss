@@ -15,11 +15,13 @@ Todo list to fill the void of our souls (but i really want to make it web)
 - [X] Message logging
 - [X] Use itens (basic potions)
 - [X] Press space for AoE
-- [ ] Better put some save/load system early, like, now
+- [X] Better put some save/load system early, like, now
+- [X] Refactor code for constants and save/load artifacts
+- [X] Leveling/xp system
 - [ ] Equipments/spell/stuff for progress (change parameters with pickups)
-- [ ] decide on how player will attack
+- [X] decide on how player will attack
 - [ ] State machines?
 - [ ] Monster attack patterns
 - [ ] Attack stamina != moving stamina
-- [ ] Exits
+- [X] Exits
 - [ ] Larger mobs?

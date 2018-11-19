@@ -2,13 +2,14 @@ import libtcodpy as libtcod
 import math
 from enum import Enum
 from game_states import GameStates
-from menus import inventory_menu
+from menus import inventory_menu, level_up_menu
 
 class RenderOrder(Enum):
-    CORPSE = 1
-    EFFECT = 1
-    ITEM = 2
-    ACTOR = 3
+    STAIRS = 1
+    CORPSE = 2
+    EFFECT = 2
+    ITEM = 3
+    ACTOR = 4
 
 def get_names_under_mouse(mouse, entities, fov_map):
     (x, y) = (mouse.cx, mouse.cy)
@@ -51,7 +52,7 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
                         #     libtcod.console_set_char_background(con, x, y, colors.get('medium_wall'), libtcod.BKGND_SET)
                         # else:
                         #     libtcod.console_set_char_background(con, x, y, colors.get('light_wall'), libtcod.BKGND_SET)
-                        if game_state == GameStates.SHOW_INVENTORY:
+                        if game_state != GameStates.PLAYERS_TURN:
                             clr = math.floor(11-((10*dist)/(fov_radius+1)))
                             libtcod.console_set_char_background(con, x, y, libtcod.Color(clr, clr, 30), libtcod.BKGND_SET)
                         else:
@@ -62,7 +63,7 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
                         #     libtcod.console_set_char_background(con, x, y, colors.get('medium_ground'), libtcod.BKGND_SET)
                         # else:
                         #     libtcod.console_set_char_background(con, x, y, colors.get('light_ground'), libtcod.BKGND_SET)
-                        if game_state == GameStates.SHOW_INVENTORY:
+                        if game_state != GameStates.PLAYERS_TURN:
                             clr = math.floor(7-((6*dist)/(fov_radius+1)))
                             libtcod.console_set_char_background(con, x, y, libtcod.Color(clr, clr, 0), libtcod.BKGND_SET)
                         else:
@@ -103,14 +104,22 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     render_bar(panel, 1, 3, bar_width, 'ST', player.cooldown, player.maxCooldown, libtcod.light_gray, libtcod.dark_gray)
 
     libtcod.console_set_default_foreground(panel, libtcod.light_gray)
+    libtcod.console_print_ex(panel, bar_width, 5, libtcod.BKGND_NONE, libtcod.RIGHT,
+                             'Andar: {0}/{1}'.format(game_map.dungeon_level, '?'))
+
+    libtcod.console_set_default_foreground(panel, libtcod.light_gray)
     libtcod.console_print_ex(panel, 1, 0, libtcod.BKGND_NONE, libtcod.LEFT,
                              get_names_under_mouse(mouse, entities, fov_map))
 
     libtcod.console_blit(panel, 0, 0, screen_width, panel_height, 0, 0, panel_y)
 
     if game_state == GameStates.SHOW_INVENTORY:
+        print(menu_position)
         inventory_menu(con, 'Itens:\n',
                        player.inventory, 50, screen_width, screen_height, menu_position)
+    
+    if game_state == GameStates.LEVEL_UP:
+        level_up_menu(con, 'Fortaleca:\n', player, 40, screen_width, screen_height, menu_position)
 
 
 def clear_all(con, entities):
@@ -119,7 +128,7 @@ def clear_all(con, entities):
 
 
 def draw_entity(con, entity, fov_map):
-    if libtcod.map_is_in_fov(fov_map, entity.x, entity.y):
+    if libtcod.map_is_in_fov(fov_map, entity.x, entity.y) or entity.stairs:
         libtcod.console_set_default_foreground(con, entity.color)
         libtcod.console_put_char(con, entity.x, entity.y, entity.char, libtcod.BKGND_NONE)
 

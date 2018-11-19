@@ -5,8 +5,8 @@ from game_messages import Message
 from entity import get_blocking_entities_at_location
 
 class Damage_Area:
-    def __init__(self, x, y, power, delay=0):
-        self.name = "AoE"
+    def __init__(self, name, x, y, power, delay=0):
+        self.name = name
         self.x = x
         self.y = y
         self.power = power
