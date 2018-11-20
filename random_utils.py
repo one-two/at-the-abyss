@@ -9,14 +9,11 @@ def from_dungeon_level(table, dungeon_level):
 
 def random_choice_index(chances):
     random_chance = randint(1, sum(chances))
-    print('r chance:' + str(random_chance))
     running_sum = 0
     choice = 0
     for w in chances:
         running_sum += w
-        print('r sum: ' + str(running_sum))
         if random_chance <= running_sum:
-            print('choice: ' + str(choice))
             return choice
         choice += 1
 
