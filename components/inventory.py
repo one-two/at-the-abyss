@@ -32,13 +32,14 @@ class Inventory:
     
     def use(self, item_entity, **kwargs):
         results = []
-
+        equipped = False
         item_component = item_entity.item
 
         if item_component.use_function is None:
             equippable_component = item_entity.equippable
             if equippable_component:
                 results.append({'equip': item_entity})
+                equipped = True
             else:
                 results.append({'message': Message('{0} nao e usavel'.format(item_entity.name), libtcod.yellow)})
         else:
@@ -51,7 +52,7 @@ class Inventory:
 
             results.extend(item_use_results)
 
-        return results
+        return results, equipped
 
     def remove_item(self, item):
         if self.owner.equipment.main_hand == item or self.owner.equipment.off_hand == item:

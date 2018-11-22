@@ -114,9 +114,8 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     libtcod.console_blit(panel, 0, 0, screen_width, panel_height, 0, 0, panel_y)
 
     if game_state == GameStates.SHOW_INVENTORY:
-        print(menu_position)
         inventory_menu(con, 'Itens:\n',
-                       player.inventory, 50, screen_width, screen_height, menu_position)
+                       player, 50, screen_width, screen_height, menu_position)
     
     if game_state == GameStates.LEVEL_UP:
         level_up_menu(con, 'Fortaleca:\n', player, 40, screen_width, screen_height, menu_position)
@@ -131,7 +130,7 @@ def clear_all(con, entities):
 
 
 def draw_entity(con, entity, fov_map):
-    if libtcod.map_is_in_fov(fov_map, entity.x, entity.y) or entity.stairs:
+    if libtcod.map_is_in_fov(fov_map, entity.x, entity.y) or entity.stairs or entity.item:
         libtcod.console_set_default_foreground(con, entity.color)
         libtcod.console_put_char(con, entity.x, entity.y, entity.char, libtcod.BKGND_NONE)
 

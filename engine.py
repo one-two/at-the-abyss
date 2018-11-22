@@ -54,6 +54,7 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
 
         click = mouse_action.get('left_click')
 
+
         if game_state == GameStates.PLAYER_DEAD:
             sleep(5)
             break
@@ -100,15 +101,14 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
             dmg3.CreateDamageEntity(game_map, dmg3, entities)
             dmg4.CreateDamageEntity(game_map, dmg4, entities)
             
-        if pickup and player.stamina == player.maxStamina and game_state == GameStates.PLAYERS_TURN:
-            player.stamina = 0
+        if pickup and game_state == GameStates.PLAYERS_TURN:
             for entity in entities:
                 if entity.item and entity.x == player.x and entity.y == player.y:
                     pickup_results = player.inventory.add_item(entity)
                     act_results.extend(pickup_results)
 
                     break
-                if entity.x == player.x and entity.y == player.y and entity.render_order == RenderOrder.CORPSE:
+                elif entity.x == player.x and entity.y == player.y and entity.render_order == RenderOrder.CORPSE:
                     message_log.add_message(Message('Presunto! Uoba', libtcod.purple))
                     break
             else:
@@ -142,7 +142,7 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
                 game_state = previous_game_state
 
         if (move or use or drop) and game_state == GameStates.SHOW_INVENTORY:
-            if move and player.inventory.items:
+            if move:
                 dx, dy = move
                 if dy != 0:
                     menu_position += dy
@@ -150,15 +150,18 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
                         menu_position = len(player.inventory.items) -1
                     if menu_position == len(player.inventory.items):
                         menu_position = 0
-            if use and player.inventory.items:
-                message_use = player.inventory.use(player.inventory.items[menu_position])
+            if use:
+                message_use, equipped = player.inventory.use(player.inventory.items[menu_position])
                 act_results.extend(message_use)
-                #print(player.inventory.items.pop(menu_position).name)
-                if menu_position >= len(player.inventory.items)-1:
-                    menu_position = len(player.inventory.items)-1
-                    if menu_position < 0:
-                        menu_position = 0
-                if drop and player.inventory.items:
+                if equipped:
+                    if menu_position >= len(player.inventory.items)-1:
+                        menu_position = len(player.inventory.items)-1
+                        if menu_position < 0:
+                            menu_position = 0
+            if drop:
+                if len(player.inventory.items) == 0:
+                    message_log.add_message(Message('Voce destruiu nada', libtcod.yellow))
+                else:
                     message_log.add_message(Message('Voce destruiu o item {0}'.format(player.inventory.items[menu_position].name), libtcod.yellow))
                     player.inventory.remove_item(player.inventory.items[menu_position])
                     if menu_position == len(player.inventory.items)-1:
@@ -190,12 +193,12 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
                         menu_position = 0
             if use:
                 if menu_position == 0:
-                    player.fighter.max_hp += 20
+                    player.fighter.base_max_hp += 20
                     player.fighter.hp += 20
                 elif menu_position == 1:
-                    player.fighter.power += 1
+                    player.fighter.base_power += 1
                 elif menu_position == 2:
-                    player.fighter.defense += 1
+                    player.fighter.base_defense += 1
                 game_state = previous_game_state
                 
         if exit:

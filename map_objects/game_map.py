@@ -8,6 +8,8 @@ from components.ai import BasicMonster
 from components.fighter import Fighter
 from components.item import Item
 from components.stairs import Stairs
+from components.equipment import EquipmentSlots
+from components.equippable import Equippable
 from random_utils import random_choice_from_dict, from_dungeon_level
 from render_functions import RenderOrder
 from game_messages import Message
@@ -71,13 +73,14 @@ class GameMap:
         }
 
         item_chances = {
-            'healing_potion': 35,
+            'healing_potion': 100,
+            'sword': from_dungeon_level([[100, 0]], self.dungeon_level),
+            'shield': from_dungeon_level([[15, 8]], self.dungeon_level),
             'lightning_scroll': from_dungeon_level([[25, 4]], self.dungeon_level),
             'fireball_scroll': from_dungeon_level([[25, 6]], self.dungeon_level),
             'confusion_scroll': from_dungeon_level([[10, 2]], self.dungeon_level)
         }
 
-        print(monster_chances)
 
         for i in range(number_of_monsters):
             x = randint(room.x1 + 1, room.x2 - 1)
@@ -107,7 +110,14 @@ class GameMap:
                 if item_choice == 'healing_potion':    
                     item_component = Item(use_function=heal, amount=40)
                     item = Entity(x,y, '!', libtcod.violet, 0, 'possao', 0, render_order=RenderOrder.ITEM, item=item_component)
-
+                    entities.append(item)
+                elif item_choice == 'sword':
+                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3)
+                    item = Entity(x, y, '/', libtcod.sky, 0, 'Sword', equippable=equippable_component)
+                    entities.append(item)
+                elif item_choice == 'shield':
+                    equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1)
+                    item = Entity(x, y, '[', libtcod.darker_orange, 0, 'Shield', equippable=equippable_component)
                     entities.append(item)
 
     def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities):
