@@ -2,6 +2,7 @@ import libtcodpy as libtcod
 from components.fighter import Fighter
 from components.inventory import Inventory
 from components.level import Level
+from components.equipment import Equipment
 
 from entity import Entity
 
@@ -74,7 +75,9 @@ def get_game_variables(constants):
     fighter_component = Fighter(hp=70, defense=1, power=4)
     inventory_component = Inventory(26)
     level_component = Level()
-    player = Entity(0, 0, '@', libtcod.azure, 1, 'player', 10, blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, inventory=inventory_component, level=level_component)
+    equipment_component = Equipment()
+    player = Entity(0, 0, '@', libtcod.azure, 1, 'player', 10, blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, inventory=inventory_component, level=level_component,
+                    equipment=equipment_component)
     #npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), 'S', libtcod.yellow, True)
 
     entities = [player]

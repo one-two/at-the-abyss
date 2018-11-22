@@ -36,7 +36,11 @@ class Inventory:
         item_component = item_entity.item
 
         if item_component.use_function is None:
-            results.append({'message': Message('{0} nao e usavel'.format(item_entity.name), libtcod.yellow)})
+            equippable_component = item_entity.equippable
+            if equippable_component:
+                results.append({'equip': item_entity})
+            else:
+                results.append({'message': Message('{0} nao e usavel'.format(item_entity.name), libtcod.yellow)})
         else:
             kwargs = {**item_component.function_kwargs, **kwargs}
             item_use_results = item_component.use_function(self.owner, **kwargs)
@@ -50,4 +54,6 @@ class Inventory:
         return results
 
     def remove_item(self, item):
+        if self.owner.equipment.main_hand == item or self.owner.equipment.off_hand == item:
+            self.owner.equipment.toggle_equip(item)
         self.items.remove(item)

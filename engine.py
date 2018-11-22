@@ -48,6 +48,7 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
         fullscreen = action.get('fullscreen')
         use  = action.get('use')
         drop = action.get('drop')
+        equip = action.get('equip')
         strong_attack = action.get('strong_attack')
         show_character_screen = action.get('show_character_screen')
 
@@ -141,7 +142,6 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
                 game_state = previous_game_state
 
         if (move or use or drop) and game_state == GameStates.SHOW_INVENTORY:
-            print(menu_position)
             if move and player.inventory.items:
                 dx, dy = move
                 if dy != 0:
@@ -158,14 +158,27 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
                     menu_position = len(player.inventory.items)-1
                     if menu_position < 0:
                         menu_position = 0
-            if drop and player.inventory.items:
-                message_log.add_message(Message('Voce destruiu o item {0}'.format(player.inventory.items[menu_position].name), libtcod.yellow))
-                player.inventory.remove_item(player.inventory.items[menu_position])
-                if menu_position == len(player.inventory.items)-1:
-                    menu_position -= 2
-                    if menu_position < 0:
-                        menu_position = 0
+                if drop and player.inventory.items:
+                    message_log.add_message(Message('Voce destruiu o item {0}'.format(player.inventory.items[menu_position].name), libtcod.yellow))
+                    player.inventory.remove_item(player.inventory.items[menu_position])
+                    if menu_position == len(player.inventory.items)-1:
+                        menu_position -= 2
+                        if menu_position < 0:
+                            menu_position = 0
         
+        if equip:
+            equip_results = player.equipment.toggle_equip(equip)
+
+            for equip_result in equip_results:
+                equipped = equip_result.get('equipped')
+                dequipped = equip_result.get('dequipped')
+
+                if equipped:
+                    message_log.add_message(Message('Voce equipou {0}'.format(equipped.name)))
+
+                if dequipped:
+                    message_log.add_message(Message('Voce desequipou {0}'.format(dequipped.name)))
+
         if game_state == GameStates.LEVEL_UP:
             if move:
                 dx, dy = move
