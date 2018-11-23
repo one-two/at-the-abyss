@@ -5,13 +5,14 @@ from game_messages import Message
 from entity import get_blocking_entities_at_location
 
 class Damage_Area:
-    def __init__(self, name, x, y, power, delay=0):
+    def __init__(self, name, x, y, power, delay=0, owner=None):
         self.name = name
         self.x = x
         self.y = y
         self.power = power
         self.delay = delay
         self.time = 0
+        self.owner = owner
 
     def CreateDamageEntity(self, game_map, dmg, entities):
         if not game_map.is_blocked(dmg.x, dmg.y):
@@ -22,7 +23,7 @@ class Damage_Area:
     def CauseDamage(self, entities):
         results = []
         for entity in entities:
-            if self.x == entity.x and self.y == entity.y and entity.ai and entity.fighter:
+            if self.x == entity.x and self.y == entity.y and entity.fighter and (self.owner != entity):
                 damage = self.power - entity.fighter.defense
                 if damage > 0:
                     results.append({'message': Message('{0} ataca {1} e mandou {2} de dano.'.format(

@@ -48,7 +48,6 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
         fullscreen = action.get('fullscreen')
         use  = action.get('use')
         drop = action.get('drop')
-        equip = action.get('equip')
         strong_attack = action.get('strong_attack')
         show_character_screen = action.get('show_character_screen')
 
@@ -75,7 +74,7 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
         if move and player.stamina == player.maxStamina and game_state == GameStates.PLAYERS_TURN:
             player.stamina = 0
             dx, dy = move
-            lastmove = move
+            player.lastmove = move
             dest_x = player.x + dx
             dest_y = player.y + dy
 
@@ -91,11 +90,11 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
 
         if strong_attack and player.cooldown >= 40:
             player.cooldown = 0
-            dx, dy = lastmove
-            dmg = Damage_Area(player.name, player.x + dx, player.y + dy, 7, delay=40)
-            dmg2 = Damage_Area(player.name, player.x + (dx*2), player.y + (dy*2), 7, delay=40)
-            dmg3 = Damage_Area(player.name, player.x + (dx*3), player.y + (dy*3), 7, delay=40)
-            dmg4 = Damage_Area(player.name, player.x + (dx*4), player.y + (dy*4), 7, delay=40)
+            dx, dy = player.lastmove
+            dmg = Damage_Area(player.name, player.x + dx, player.y + dy, 7, delay=40, owner=player)
+            dmg2 = Damage_Area(player.name, player.x + (dx*2), player.y + (dy*2), 7, delay=40, owner=player)
+            dmg3 = Damage_Area(player.name, player.x + (dx*3), player.y + (dy*3), 7, delay=40, owner=player)
+            dmg4 = Damage_Area(player.name, player.x + (dx*4), player.y + (dy*4), 7, delay=40, owner=player)
             dmg.CreateDamageEntity(game_map, dmg, entities)
             dmg2.CreateDamageEntity(game_map, dmg2, entities)
             dmg3.CreateDamageEntity(game_map, dmg3, entities)
@@ -168,19 +167,7 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
                         menu_position -= 2
                         if menu_position < 0:
                             menu_position = 0
-        
-        if equip:
-            equip_results = player.equipment.toggle_equip(equip)
 
-            for equip_result in equip_results:
-                equipped = equip_result.get('equipped')
-                dequipped = equip_result.get('dequipped')
-
-                if equipped:
-                    message_log.add_message(Message('Voce equipou {0}'.format(equipped.name)))
-
-                if dequipped:
-                    message_log.add_message(Message('Voce desequipou {0}'.format(dequipped.name)))
 
         if game_state == GameStates.LEVEL_UP:
             if move:
@@ -233,6 +220,20 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
             item_added = player_turn_result.get('item_added')
             expired = player_turn_result.get('expired')
             xp = player_turn_result.get('xp')
+            equip = player_turn_result.get('equip')
+                        
+            if equip:
+                equip_results = player.equipment.toggle_equip(equip)
+
+                for equip_result in equip_results:
+                    equipped = equip_result.get('equipped')
+                    dequipped = equip_result.get('dequipped')
+
+                    if equipped:
+                        message_log.add_message(Message('Voce equipou {0}'.format(equipped.name)))
+
+                    if dequipped:
+                        message_log.add_message(Message('Voce desequipou {0}'.format(dequipped.name)))
 
             if message:
                 message_log.add_message(message)

@@ -34,6 +34,8 @@ class Entity:
         self.level = level
         self.equipment = equipment
         self.equippable = equippable
+        self.lastmove = [0, 0]
+        self.face = 'N'
 
         if self.fighter:
             self.fighter.owner = self
