@@ -5,7 +5,7 @@ from game_messages import Message
 from entity import get_blocking_entities_at_location
 
 class Damage_Area:
-    def __init__(self, name, x, y, power, delay=0, owner=None, skill='skill'):
+    def __init__(self, name, x, y, power, delay=0, owner=None, skill='skill', icon='x'):
         self.name = name
         self.skill = skill
         self.x = x
@@ -14,11 +14,12 @@ class Damage_Area:
         self.delay = delay
         self.time = 0
         self.owner = owner
+        self.icon = icon
 
     def CreateDamageEntity(self, game_map, dmg, entities):
         if not game_map.is_blocked(dmg.x, dmg.y):
             target = get_blocking_entities_at_location(entities, dmg.x, dmg.y)
-            dmg_pixel = Entity(dmg.x, dmg.y, 'x', libtcod.darker_red, 0, 'damage', 200, blocks = False, render_order=RenderOrder.EFFECT, damage=dmg)
+            dmg_pixel = Entity(dmg.x, dmg.y, self.icon, libtcod.darker_red, 0, 'damage', 200, blocks = False, render_order=RenderOrder.EFFECT, damage=dmg)
             entities.append(dmg_pixel)
 
     def CauseDamage(self, entities):

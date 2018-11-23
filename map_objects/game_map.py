@@ -4,7 +4,7 @@ from random import randint, choice
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
 from entity import Entity
-from components.ai import Troll, Orc
+from components.ai import Troll, Orc, Dragon
 from components.fighter import Fighter
 from components.item import Item
 from components.stairs import Stairs
@@ -68,8 +68,9 @@ class GameMap:
         number_of_items = randint(0, max_items_per_room)
 
         monster_chances = {
-            'orc': 80,
-            'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], self.dungeon_level)
+            'orc': from_dungeon_level([[80, 1], [50, 3], [40, 7]], self.dungeon_level),
+            'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], self.dungeon_level),
+            'dragon': from_dungeon_level([[200, 1], [10, 3], [20, 7]], self.dungeon_level)
         }
 
         item_chances = {
@@ -98,6 +99,11 @@ class GameMap:
                     fighter_component = Fighter(hp=30, defense=2, power=8, xp=100)
                     ai_component = Troll()
                     monster = Entity(x,y, 'T', libtcod.darker_green, 0, 'troll', 200, blocks = True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+                    entities.append(monster)
+                elif monster_choice == 'dragon':
+                    fighter_component = Fighter(hp=100, defense=5, power=16, xp=300)
+                    ai_component = Dragon()
+                    monster = Entity(x,y, 'D', libtcod.crimson, 0, 'dragao', 200, blocks = True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
                     entities.append(monster)
                 
         
