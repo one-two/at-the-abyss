@@ -271,6 +271,7 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
                     if entity.stamina < entity.maxStamina and entity.maxStamina != 0: entity.stamina += 1 
                     elif entity.fighter and entity.fighter.hp > 0:
                         entity.stamina = 0
+                        if entity.cooldown < entity.maxCooldown: entity.cooldown += 1
                         enemy_turn_results = entity.ai.act(player, fov_map, game_map, entities)
                         for enemy_turn_result in enemy_turn_results:
                             message = enemy_turn_result.get('message')

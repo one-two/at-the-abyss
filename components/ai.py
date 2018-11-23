@@ -59,9 +59,9 @@ class Orc:
         if monster.distance_to(player) < 9:
             monster.move_astar(player, entities, game_map)
             monster.stamina = round(monster.maxStamina * 0.7)
-            if monster.distance_to(player) < 6:
-                if random.randint(1, 6) > 3:
-                    #monster.fighter.bash(player, game_map, entities)
+            if monster.distance_to(player) < 3:
+                if random.randint(1, 6) > 2:
+                    monster.fighter.slap(player, game_map, entities)
                     pass
             if monster.distance_to(player) < 2:
                 attack_results = monster.fighter.attack(player)
