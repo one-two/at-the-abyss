@@ -2,7 +2,8 @@ from equipment_slots import EquipmentSlots
 
 class Equipment:
     def __init__(self, main_hand=None, off_hand=None):
-        self.main_hand = main_hand
+        self.name = 'Maos'
+        self.main_hand = main_hand #Entity
         self.off_hand = off_hand
 
     @property
@@ -49,22 +50,26 @@ class Equipment:
         if slot == EquipmentSlots.MAIN_HAND:
             if self.main_hand == equippable_entity:
                 self.main_hand = None
+                self.name = 'Maos'
                 results.append({'dequipped': self.main_hand})
             else:
                 if self.main_hand:
                     results.append({'dequipped': self.main_hand})
                 
                 self.main_hand = equippable_entity
+                self.name = equippable_entity.name
                 results.append({'equipped': self.main_hand})
 
         if slot == EquipmentSlots.OFF_HAND:
             if self.off_hand == equippable_entity:
                 self.off_hand = None
+                self.name = 'Maos'
                 results.append({'dequipped': self.off_hand})
             else:
                 if self.off_hand:
                     results.append({'dequipped': self.off_hand})
                 
                 self.off_hand = equippable_entity
+                self.name = equippable_entity.name
                 results.append({'equipped': self.off_hand})
         return results

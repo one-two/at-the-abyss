@@ -90,11 +90,17 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
 
         if strong_attack and player.cooldown >= 40:
             player.cooldown = 0
+            #print(player.equipment.power_bonus)
+            #print(player.equipment.name)
+            if player.equipment.main_hand:
+                
+                weapon = player.equipment.main_hand.name
+
             dx, dy = player.lastmove
-            dmg = Damage_Area(player.name, player.x + dx, player.y + dy, 7, delay=40, owner=player)
-            dmg2 = Damage_Area(player.name, player.x + (dx*2), player.y + (dy*2), 7, delay=40, owner=player)
-            dmg3 = Damage_Area(player.name, player.x + (dx*3), player.y + (dy*3), 7, delay=40, owner=player)
-            dmg4 = Damage_Area(player.name, player.x + (dx*4), player.y + (dy*4), 7, delay=40, owner=player)
+            dmg = Damage_Area(player.name, player.x + dx, player.y + dy, player.fighter.power, delay=40, owner=player)
+            dmg2 = Damage_Area(player.name, player.x + (dx*2), player.y + (dy*2), player.fighter.power, delay=40, owner=player)
+            dmg3 = Damage_Area(player.name, player.x + (dx*3), player.y + (dy*3), player.fighter.power, delay=40, owner=player)
+            dmg4 = Damage_Area(player.name, player.x + (dx*4), player.y + (dy*4), player.fighter.power, delay=40, owner=player)
             dmg.CreateDamageEntity(game_map, dmg, entities)
             dmg2.CreateDamageEntity(game_map, dmg2, entities)
             dmg3.CreateDamageEntity(game_map, dmg3, entities)

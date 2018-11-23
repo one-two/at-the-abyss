@@ -88,10 +88,10 @@ class Dragon:
         monster = self.owner
         destx = monster.x + mx
         desty = monster.y + my
-        if monster.distance_to(player) < 9:
+        if monster.distance_to(player) < 8:
             monster.move_astar(player, entities, game_map)
             monster.stamina = round(monster.maxStamina * 0.7)
-            if monster.distance_to(player) < 9:
+            if monster.distance_to(player) < 8:
                 if random.randint(1, 6) > 2:
                     monster.fighter.fire_cone(player, game_map, entities)
                     pass

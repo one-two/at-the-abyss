@@ -76,7 +76,7 @@ class GameMap:
         item_chances = {
             'healing_potion': 100,
             'sword': from_dungeon_level([[100, 0]], self.dungeon_level),
-            'shield': from_dungeon_level([[15, 8]], self.dungeon_level),
+            'shield': from_dungeon_level([[100, 0]], self.dungeon_level),
             'lightning_scroll': from_dungeon_level([[25, 4]], self.dungeon_level),
             'fireball_scroll': from_dungeon_level([[25, 6]], self.dungeon_level),
             'confusion_scroll': from_dungeon_level([[10, 2]], self.dungeon_level)
@@ -118,11 +118,11 @@ class GameMap:
                     item = Entity(x,y, '!', libtcod.violet, 0, 'possao', 0, render_order=RenderOrder.ITEM, item=item_component)
                     entities.append(item)
                 elif item_choice == 'sword':
-                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3)
+                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3, name='sword')
                     item = Entity(x, y, '/', libtcod.sky, 0, 'Sword', equippable=equippable_component)
                     entities.append(item)
                 elif item_choice == 'shield':
-                    equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1)
+                    equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1, name='shield')
                     item = Entity(x, y, '[', libtcod.darker_orange, 0, 'Shield', equippable=equippable_component)
                     entities.append(item)
 
