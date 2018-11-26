@@ -18,10 +18,10 @@ Todo list to fill the void of our souls (but i really want to make it web)
 - [X] Better put some save/load system early, like, now
 - [X] Refactor code for constants and save/load artifacts
 - [X] Leveling/xp system
-- [ ] Equipments/spell/stuff for progress (change parameters with pickups)
+- [X] Equipments/spell/stuff for progress (change parameters with pickups)
 - [X] decide on how player will attack
 - [X] State machines? sorta
-- [ ] Monster attack patterns
-- [ ] Attack stamina != moving stamina
+- [X] Monster attack patterns
+- [X] Attack stamina != moving stamina
 - [X] Exits
 - [ ] Larger mobs?

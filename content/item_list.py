@@ -42,15 +42,15 @@ def CreateItem(name, x, y, dungeon_level):
         return item
     #weapons
     elif name == 'spear':
-        equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3 + round(3*bonus) + base, name=prefix + 'spear', cooldown=50)
+        equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3 + base + round((3+base)*bonus) , name=prefix + 'spear', cooldown=50)
         item = Entity(x, y, '/', libtcod.sky, 0, prefix + 'spear', equippable=equippable_component)
         return item
     elif name == 'sword':
-        equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=2 + round(2*bonus) + base, name=prefix + 'sword', cooldown=50)
+        equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=2 + base + round((2+base)*bonus), name=prefix + 'sword', cooldown=50)
         item = Entity(x, y, '+', libtcod.sky, 0, prefix + 'sword', equippable=equippable_component)
         return item
     #shields
     elif name == 'shield':
-        equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1 + round(1*bonus) + base//2, name=prefix + 'shield')
+        equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1 + round((1+base//2)*bonus) + base//2, name=prefix + 'shield')
         item = Entity(x, y, '[', libtcod.darker_orange, 0, prefix + 'shield', equippable=equippable_component)
         return item
