@@ -88,6 +88,13 @@ def character_screen(player, character_screen_width, character_screen_height, sc
                                   libtcod.LEFT, 'Ataque: {0}'.format(player.fighter.power))
     libtcod.console_print_rect_ex(window, 0, 8, character_screen_width, character_screen_height, libtcod.BKGND_NONE,
                                   libtcod.LEFT, 'Defesa: {0}'.format(player.fighter.defense))
+    if player.equipment.main_hand:
+        libtcod.console_print_rect_ex(window, 0, 10, character_screen_width, character_screen_height, libtcod.BKGND_NONE,
+                                    libtcod.LEFT, 'Mao Principal: {0}'.format(player.equipment.main_hand.name))
+    if player.equipment.off_hand:
+        libtcod.console_print_rect_ex(window, 0, 11, character_screen_width, character_screen_height, libtcod.BKGND_NONE,
+                                    libtcod.LEFT, 'Mao Secundaria: {0}'.format(player.equipment.off_hand.name))
+
 
     x = screen_width // 2 - character_screen_width // 2
     y = screen_height // 2 - character_screen_height // 2

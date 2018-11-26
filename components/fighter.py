@@ -1,14 +1,36 @@
 import libtcodpy as libtcod
 from game_messages import Message
 from components.damage import Damage_Area
+from random import randint
+import math
+
+def monsterrank(bonus):
+    prefix = ''
+    if bonus >= -15:
+        prefix = ' inutil'
+    if bonus > -10:
+        prefix = ' fracote'
+    if bonus > -5:
+        prefix = ' fraco'
+    if bonus > 0:
+        prefix = ''
+    if bonus > 5:
+        prefix = ' forte'
+    if bonus > 10:
+        prefix = ' fortasso'
+    if bonus >= 15:
+        prefix = ' poderoso'
+    return prefix
 
 class Fighter:
     def __init__(self, hp, defense, power, xp=0):
-        self.base_max_hp = hp
-        self.hp = hp
-        self.base_defense = defense
-        self.base_power = power
-        self.xp = xp
+        bonus = randint(-15, 15)/100
+        self.rank = monsterrank(bonus*100)
+        self.base_max_hp = hp + math.ceil(hp*bonus)
+        self.hp = self.base_max_hp
+        self.base_defense = defense + math.ceil(defense*bonus)
+        self.base_power = power + math.ceil(power*bonus)
+        self.xp = xp + math.ceil(xp*bonus)
 
     @property
     def max_hp(self):
@@ -54,8 +76,9 @@ class Fighter:
                 self.owner.name.capitalize(), target.name, str(damage)), libtcod.white)})
             results.extend(target.fighter.take_damage(damage))
         else:
-            results.append({'message': Message('{0} ataca {1} mas nao bateu nada.'.format(
+            results.append({'message': Message('{0} ataca {1}, mas defendeu. 1 de dano.'.format(
                 self.owner.name.capitalize(), target.name), libtcod.white)})
+            results.extend(target.fighter.take_damage(1))
         return results
 
     def heal(self, amount):

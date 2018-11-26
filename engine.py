@@ -13,6 +13,7 @@ from components.damage import Damage_Area
 from loader_functions.initialize_new_game import get_constants, get_game_variables
 from loader_functions.data_loaders import load_game, save_game
 from menus import main_menu, message_box
+from content.weapon_skills import UseSkill
 
 def game(player, entities, game_map, message_log, game_state, con, panel, constants):
     key = libtcod.Key()
@@ -88,23 +89,14 @@ def game(player, entities, game_map, message_log, game_state, con, panel, consta
                     player.move(dx, dy)
                     fov_recompute = True
 
-        if strong_attack and player.cooldown >= 40:
+        if strong_attack and player.cooldown >= player.maxCooldown:
             player.cooldown = 0
             #print(player.equipment.power_bonus)
             #print(player.equipment.name)
             if player.equipment.main_hand:
-                
-                weapon = player.equipment.main_hand.name
+                UseSkill(player.equipment.main_hand.name, player, game_map, entities)
 
-            dx, dy = player.lastmove
-            dmg = Damage_Area(player.name, player.x + dx, player.y + dy, player.fighter.power, delay=40, owner=player)
-            dmg2 = Damage_Area(player.name, player.x + (dx*2), player.y + (dy*2), player.fighter.power, delay=40, owner=player)
-            dmg3 = Damage_Area(player.name, player.x + (dx*3), player.y + (dy*3), player.fighter.power, delay=40, owner=player)
-            dmg4 = Damage_Area(player.name, player.x + (dx*4), player.y + (dy*4), player.fighter.power, delay=40, owner=player)
-            dmg.CreateDamageEntity(game_map, dmg, entities)
-            dmg2.CreateDamageEntity(game_map, dmg2, entities)
-            dmg3.CreateDamageEntity(game_map, dmg3, entities)
-            dmg4.CreateDamageEntity(game_map, dmg4, entities)
+
             
         if pickup and game_state == GameStates.PLAYERS_TURN:
             for entity in entities:

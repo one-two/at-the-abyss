@@ -14,6 +14,9 @@ from random_utils import random_choice_from_dict, from_dungeon_level
 from render_functions import RenderOrder
 from game_messages import Message
 
+from content.monsters import CreateMonster
+from content.item_list import CreateItem
+
 from item_functions import heal
 
 class GameMap:
@@ -68,18 +71,16 @@ class GameMap:
         number_of_items = randint(0, max_items_per_room)
 
         monster_chances = {
-            'orc': from_dungeon_level([[80, 1], [50, 3], [40, 7]], self.dungeon_level),
-            'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], self.dungeon_level),
-            'dragon': from_dungeon_level([[200, 1], [10, 3], [20, 7]], self.dungeon_level)
+            'orc': from_dungeon_level([[80, 1], [60, 3], [40, 7]], self.dungeon_level),
+            'troll': from_dungeon_level([[20, 1], [30, 3], [30, 5], [60, 7]], self.dungeon_level),
+            'dragon': from_dungeon_level([[1, 1], [10, 3], [20, 7]], self.dungeon_level)
         }
 
         item_chances = {
             'healing_potion': 100,
-            'sword': from_dungeon_level([[100, 0]], self.dungeon_level),
-            'shield': from_dungeon_level([[100, 0]], self.dungeon_level),
-            'lightning_scroll': from_dungeon_level([[25, 4]], self.dungeon_level),
-            'fireball_scroll': from_dungeon_level([[25, 6]], self.dungeon_level),
-            'confusion_scroll': from_dungeon_level([[10, 2]], self.dungeon_level)
+            'sword': from_dungeon_level([[10, 0], [15, 2]], self.dungeon_level),
+            'spear': from_dungeon_level([[5, 1], [10, 3]], self.dungeon_level),
+            'shield': from_dungeon_level([[5, 0]], self.dungeon_level)
         }
 
 
@@ -89,22 +90,7 @@ class GameMap:
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
                 monster_choice = random_choice_from_dict(monster_chances)
-
-                if monster_choice == 'orc':
-                    fighter_component = Fighter(hp=20, defense=0, power=4, xp=35)
-                    ai_component = Orc()
-                    monster = Entity(x,y, 'o', libtcod.desaturated_green, 0, 'orc', 300, blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
-                    entities.append(monster)
-                elif monster_choice == 'troll':
-                    fighter_component = Fighter(hp=30, defense=2, power=8, xp=100)
-                    ai_component = Troll()
-                    monster = Entity(x,y, 'T', libtcod.darker_green, 0, 'troll', 200, blocks = True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
-                    entities.append(monster)
-                elif monster_choice == 'dragon':
-                    fighter_component = Fighter(hp=100, defense=5, power=16, xp=300)
-                    ai_component = Dragon()
-                    monster = Entity(x,y, 'D', libtcod.crimson, 0, 'dragao', 200, blocks = True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
-                    entities.append(monster)
+                entities.append(CreateMonster(monster_choice, x, y))
                 
         
         for i in range(number_of_items):
@@ -113,18 +99,7 @@ class GameMap:
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
                 item_choice = random_choice_from_dict(item_chances)
-                if item_choice == 'healing_potion':    
-                    item_component = Item(use_function=heal, amount=40)
-                    item = Entity(x,y, '!', libtcod.violet, 0, 'possao', 0, render_order=RenderOrder.ITEM, item=item_component)
-                    entities.append(item)
-                elif item_choice == 'sword':
-                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3, name='sword')
-                    item = Entity(x, y, '/', libtcod.sky, 0, 'Sword', equippable=equippable_component)
-                    entities.append(item)
-                elif item_choice == 'shield':
-                    equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1, name='shield')
-                    item = Entity(x, y, '[', libtcod.darker_orange, 0, 'Shield', equippable=equippable_component)
-                    entities.append(item)
+                entities.append(CreateItem(item_choice, x, y, self.dungeon_level))
 
     def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities):
         rooms = []

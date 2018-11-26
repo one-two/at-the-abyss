@@ -58,6 +58,8 @@ class Equipment:
                 
                 self.main_hand = equippable_entity
                 self.name = equippable_entity.name
+                self.owner.maxCooldown = equippable_entity.equippable.cooldown
+                self.owner.cooldown = 0
                 results.append({'equipped': self.main_hand})
 
         if slot == EquipmentSlots.OFF_HAND:
