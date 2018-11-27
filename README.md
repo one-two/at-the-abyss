@@ -1,5 +1,5 @@
 # at-the-abyss
-py game console abyss
+Simple RL game. On hold, working on a web version.
 
 
 Arrows: Movement
