@@ -73,7 +73,7 @@ class Fighter:
 
         if damage > 0:
             results.append({'message': Message('{0} ataca {1} e mandou {2} de dano.'.format(
-                self.owner.name.capitalize(), target.name, str(damage)), libtcod.white)})
+                self.owner.name.capitalize(), target.name, str(round(damage))), libtcod.white)})
             results.extend(target.fighter.take_damage(damage))
         else:
             results.append({'message': Message('{0} ataca {1}, mas defendeu. 1 de dano.'.format(
@@ -94,26 +94,26 @@ class Fighter:
             if self.owner.face == 'U': dy -= 1
             if self.owner.face == 'D': dy += 1
             trigger = True
-            dmg0 = Damage_Area(self.owner.name, self.owner.x + 0, self.owner.y + (dy*1), round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg1 = Damage_Area(self.owner.name, self.owner.x + 0, self.owner.y + (dy*2), round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg2 = Damage_Area(self.owner.name, self.owner.x + 1, self.owner.y + (dy*3), round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg3 = Damage_Area(self.owner.name, self.owner.x + 0, self.owner.y + (dy*3), round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg4 = Damage_Area(self.owner.name, self.owner.x - 1, self.owner.y + (dy*3), round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg5 = Damage_Area(self.owner.name, self.owner.x + 1, self.owner.y + (dy*4), round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg6 = Damage_Area(self.owner.name, self.owner.x + 0, self.owner.y + (dy*4), round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg7 = Damage_Area(self.owner.name, self.owner.x - 1, self.owner.y + (dy*4), round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
+            dmg0 = Damage_Area(self.owner.name, self.owner.x + 0, self.owner.y + (dy*1), self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg1 = Damage_Area(self.owner.name, self.owner.x + 0, self.owner.y + (dy*2), self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg2 = Damage_Area(self.owner.name, self.owner.x + 1, self.owner.y + (dy*3), self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg3 = Damage_Area(self.owner.name, self.owner.x + 0, self.owner.y + (dy*3), self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg4 = Damage_Area(self.owner.name, self.owner.x - 1, self.owner.y + (dy*3), self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg5 = Damage_Area(self.owner.name, self.owner.x + 1, self.owner.y + (dy*4), self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg6 = Damage_Area(self.owner.name, self.owner.x + 0, self.owner.y + (dy*4), self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg7 = Damage_Area(self.owner.name, self.owner.x - 1, self.owner.y + (dy*4), self.power*1.1, delay=40, owner=self.owner, skill='tremor')
         if self.owner.face == 'L' or self.owner.face == 'R':
             if self.owner.face == 'L': dx += 1
             if self.owner.face == 'R': dx -= 1
             trigger = True
-            dmg0 = Damage_Area(self.owner.name, self.owner.x + (dx*1), self.owner.y + 0, round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg1 = Damage_Area(self.owner.name, self.owner.x + (dx*2), self.owner.y + 0, round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg2 = Damage_Area(self.owner.name, self.owner.x + (dx*3), self.owner.y + 1, round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg3 = Damage_Area(self.owner.name, self.owner.x + (dx*3), self.owner.y + 0, round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg4 = Damage_Area(self.owner.name, self.owner.x + (dx*3), self.owner.y - 1, round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg5 = Damage_Area(self.owner.name, self.owner.x + (dx*4), self.owner.y + 1, round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg6 = Damage_Area(self.owner.name, self.owner.x + (dx*4), self.owner.y + 0, round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
-            dmg7 = Damage_Area(self.owner.name, self.owner.x + (dx*4), self.owner.y - 1, round(self.power*1.4), delay=40, owner=self.owner, skill='tremor')
+            dmg0 = Damage_Area(self.owner.name, self.owner.x + (dx*1), self.owner.y + 0, self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg1 = Damage_Area(self.owner.name, self.owner.x + (dx*2), self.owner.y + 0, self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg2 = Damage_Area(self.owner.name, self.owner.x + (dx*3), self.owner.y + 1, self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg3 = Damage_Area(self.owner.name, self.owner.x + (dx*3), self.owner.y + 0, self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg4 = Damage_Area(self.owner.name, self.owner.x + (dx*3), self.owner.y - 1, self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg5 = Damage_Area(self.owner.name, self.owner.x + (dx*4), self.owner.y + 1, self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg6 = Damage_Area(self.owner.name, self.owner.x + (dx*4), self.owner.y + 0, self.power*1.1, delay=40, owner=self.owner, skill='tremor')
+            dmg7 = Damage_Area(self.owner.name, self.owner.x + (dx*4), self.owner.y - 1, self.power*1.1, delay=40, owner=self.owner, skill='tremor')
 
         if trigger:
             dmg0.CreateDamageEntity(game_map, dmg0, entities)
@@ -200,3 +200,41 @@ class Fighter:
             dmg10.CreateDamageEntity(game_map, dmg10, entities)
             dmg11.CreateDamageEntity(game_map, dmg11, entities)
             dmg12.CreateDamageEntity(game_map, dmg12, entities)
+
+    def windblow(self, target, game_map, entities):
+        d = randint(0,1)
+        if d == 0:
+            dmg0 = Damage_Area(self.owner.name, target.x + 0, target.y + 1, round(self.power*1), delay=40, owner=self.owner, skill='vento', icon='v')
+            dmg1 = Damage_Area(self.owner.name, target.x + 0, target.y + 0, round(self.power*1), delay=30, owner=self.owner, skill='vento', icon='v')
+            dmg2 = Damage_Area(self.owner.name, target.x + 0, target.y - 1, round(self.power*1), delay=40, owner=self.owner, skill='vento', icon='v')
+        if d == 1:
+            dmg0 = Damage_Area(self.owner.name, target.x + 1, target.y, round(self.power*1), delay=40, owner=self.owner, skill='vento', icon='v')
+            dmg1 = Damage_Area(self.owner.name, target.x + 0, target.y, round(self.power*1), delay=30, owner=self.owner, skill='vento', icon='v')
+            dmg2 = Damage_Area(self.owner.name, target.x - 1, target.y, round(self.power*1), delay=40, owner=self.owner, skill='vento', icon='v')
+        
+        dmg0.CreateDamageEntity(game_map, dmg0, entities)
+        dmg1.CreateDamageEntity(game_map, dmg1, entities)
+        dmg2.CreateDamageEntity(game_map, dmg2, entities)
+
+    def shoot(self, target, game_map, entities):
+        dx, dy = 0, 0
+        dx = target.x - self.owner.x
+        dy = target.y - self.owner.y
+        trigger = False
+        if dx == 0: dy = int(dy/abs(dy))
+        if dy == 0: dx = int(dx/abs(dx))
+        trigger = True
+        dmg = Damage_Area(self.owner.name, self.owner.x + dx, self.owner.y + dy, self.owner.fighter.power*0.9, delay=20, owner=self.owner, skill='flecha')
+        dmg2 = Damage_Area(self.owner.name, self.owner.x + (dx*2), self.owner.y + (dy*2), self.owner.fighter.power*0.9, delay=25, owner=self.owner, skill='flecha')
+        dmg3 = Damage_Area(self.owner.name, self.owner.x + (dx*3), self.owner.y + (dy*3), self.owner.fighter.power*0.9, delay=30, owner=self.owner, skill='flecha')
+        dmg4 = Damage_Area(self.owner.name, self.owner.x + (dx*4), self.owner.y + (dy*4), self.owner.fighter.power*0.9, delay=35, owner=self.owner, skill='flecha')
+        dmg5 = Damage_Area(self.owner.name, self.owner.x + (dx*5), self.owner.y + (dy*5), self.owner.fighter.power*0.9, delay=40, owner=self.owner, skill='flecha')
+        dmg6 = Damage_Area(self.owner.name, self.owner.x + (dx*6), self.owner.y + (dy*6), self.owner.fighter.power*0.9, delay=45, owner=self.owner, skill='flecha')
+        dmg7 = Damage_Area(self.owner.name, self.owner.x + (dx*7), self.owner.y + (dy*7), self.owner.fighter.power*0.9, delay=50, owner=self.owner, skill='flecha')
+        dmg.CreateDamageEntity(game_map, dmg, entities)
+        dmg2.CreateDamageEntity(game_map, dmg2, entities)
+        dmg3.CreateDamageEntity(game_map, dmg3, entities)
+        dmg4.CreateDamageEntity(game_map, dmg4, entities)
+        dmg5.CreateDamageEntity(game_map, dmg5, entities)
+        dmg6.CreateDamageEntity(game_map, dmg6, entities)
+        dmg7.CreateDamageEntity(game_map, dmg7, entities)

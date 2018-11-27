@@ -98,7 +98,7 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
         libtcod.console_print_ex(panel, message_log.x, y, libtcod.BKGND_NONE, libtcod.LEFT, message.text.upper())
         y += 1
 
-    render_bar(panel, 1, 1, bar_width, 'HP', player.fighter.hp, player.fighter.max_hp,
+    render_bar(panel, 1, 1, bar_width, 'HP', round(player.fighter.hp), player.fighter.max_hp,
                libtcod.light_red, libtcod.darker_red)
 
     render_bar(panel, 1, 3, bar_width, 'ST', player.cooldown, player.maxCooldown, libtcod.light_gray, libtcod.dark_gray)
@@ -130,7 +130,7 @@ def clear_all(con, entities):
 
 
 def draw_entity(con, entity, fov_map):
-    if libtcod.map_is_in_fov(fov_map, entity.x, entity.y) or entity.stairs or entity.item:
+    if libtcod.map_is_in_fov(fov_map, entity.x, entity.y):# or entity.stairs or entity.item:
         libtcod.console_set_default_foreground(con, entity.color)
         libtcod.console_put_char(con, entity.x, entity.y, entity.char, libtcod.BKGND_NONE)
 

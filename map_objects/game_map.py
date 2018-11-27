@@ -72,13 +72,16 @@ class GameMap:
 
         monster_chances = {
             'orc': from_dungeon_level([[80, 1], [60, 3], [40, 7]], self.dungeon_level),
-            'troll': from_dungeon_level([[20, 1], [30, 3], [30, 5], [60, 7]], self.dungeon_level),
-            'dragon': from_dungeon_level([[1, 1], [10, 3], [20, 7]], self.dungeon_level)
+            'troll': from_dungeon_level([[5, 1], [10, 3], [30, 5], [60, 7]], self.dungeon_level),
+            'wyvern': from_dungeon_level([[40, 1], [50, 2], [50, 5]], self.dungeon_level),
+            'dragon': from_dungeon_level([[1, 1], [10, 3], [20, 7]], self.dungeon_level),
+            'ranger': from_dungeon_level([[20, 1]], self.dungeon_level)
         }
 
         item_chances = {
-            'healing_potion': 100,
-            'sword': from_dungeon_level([[10, 0], [15, 2]], self.dungeon_level),
+            'healing_potion': 35,
+            'dagger': from_dungeon_level([[10, 0]], self.dungeon_level),
+            'sword': from_dungeon_level([[5, 0], [10, 2]], self.dungeon_level),
             'spear': from_dungeon_level([[5, 1], [10, 3]], self.dungeon_level),
             'shield': from_dungeon_level([[5, 0]], self.dungeon_level)
         }

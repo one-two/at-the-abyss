@@ -93,6 +93,28 @@ class Entity:
                 get_blocking_entities_at_location(entities, self.x + 0, self.y + dy)):
                 self.move(0, dy)
 
+    def move_away(self, target_x, target_y, game_map, entities):
+        dx = target_x - self.x
+        dy = target_y - self.y
+        distance = math.sqrt(dx ** 2 + dy ** 2)
+
+        dx = int(round(dx / distance))
+        dy = int(round(dy / distance))
+        if distance > 2:
+            if not (game_map.is_blocked(self.x - dx, self.y - dy) or
+                        get_blocking_entities_at_location(entities, self.x - dx, self.y - dy)):
+                self.move(-dx, -dy)
+            elif not (game_map.is_blocked(self.x - dy, self.y - dx) or
+                        get_blocking_entities_at_location(entities, self.x - dy, self.y - dx)):
+                self.move(-dy, -dx)
+        else:
+            if not (game_map.is_blocked(self.x - dx, self.y - 0) or
+                get_blocking_entities_at_location(entities, self.x - dx, self.y - 0)):
+                self.move(-dx, 0)
+            elif not (game_map.is_blocked(self.x - 0, self.y - dy) or
+                get_blocking_entities_at_location(entities, self.x - 0, self.y - dy)):
+                self.move(0, -dy)
+
     def distance_to(self, other):
         dx = other.x - self.x
         dy = other.y - self.y

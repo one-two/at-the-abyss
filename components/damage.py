@@ -29,7 +29,7 @@ class Damage_Area:
                 damage = self.power - entity.fighter.defense
                 if damage > 0:
                     results.append({'message': Message('{0} ataca {1} com um {2} e mandou {3} de dano.'.format(
-                        self.name.capitalize(), entity.name, self.skill, str(damage)), libtcod.white)})
+                        self.name.capitalize(), entity.name, self.skill, str(round(damage))), libtcod.white)})
                     results.extend(entity.fighter.take_damage(damage))
                 else:
                     results.append({'message': Message('{0} ataca {1} com um {2} mas nao bateu nada.'.format(
