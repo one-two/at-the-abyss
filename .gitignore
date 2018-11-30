@@ -334,3 +334,9 @@ ASALocalRun/
 .localhistory/
 .vscode/settings.json
 *.pyc
+*.bak
+*.dat
+*.dir
+savegame.bak
+savegame.dat
+savegame.dir
