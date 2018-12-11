@@ -8,8 +8,8 @@ Space: Weapon attack
 
 tab: stats
 
-i: Inventory (backspace: destroy itens)
+i: Inventory (backspace: destroy items)
 
-g: Grab itens ('!')
+g: Grab items ('!')
 
 esc: Exit
